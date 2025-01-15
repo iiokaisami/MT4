@@ -12,15 +12,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	Quaternion q1 = { 2.0f, 3.0f, 4.0f, 1.0f };
-	Quaternion q2 = { 1.0f, 3.0f, 5.0f, 2.0f };
-	Quaternion identity = IdentityQuaternion();
-	Quaternion conj = Conjugate(q1);
-	Quaternion inv = Inverse(q1);
-	Quaternion norml = Normalize(q1);
-	Quaternion mul1 = Multiply(q1, q2);
-	Quaternion mul2 = Multiply(q2, q1);
-	float norm = Norm(q1);
+	Quaternion rotation = MakeRotateAxisAngleQuaternion(Normalize(Vector3{ 1.0f, 0.4f, -0.2f }), 0.45f);
+	Vector3 pointV = { 2.1f, -0.9f, 1.3f };
+	Matrix4x4 rotateMatrix = MakeRotationMatrix(rotation);
+	Vector3 rotatedByQuaternion = RotateVector(pointV, rotation);
+	Vector3 rotatedByMatrix = Transform(pointV, rotateMatrix);
 
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
@@ -41,25 +37,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		ImGui::Begin("Debug");
 
-		ImGui::Text("Identity :");
-		ImGui::Text("x: %f, y: %f, z: %f, w: %f", identity.x, identity.y, identity.z, identity.w);
+		ImGui::Text("Quaternion rotation:");
+		ImGui::Text("x: %f, y: %f, z: %f, w: %f", rotation.x, rotation.y, rotation.z, rotation.w);
 
-		ImGui::Text("Conjugate :");
-		ImGui::Text("x: %f, y: %f, z: %f, w: %f", conj.x, conj.y, conj.z, conj.w);
+		ImGui::Text("Matrix4x4 rotateMatrix:");
+		ImGui::Text("[ %f, %f, %f, %f ]", rotateMatrix.m[0][0], rotateMatrix.m[0][1], rotateMatrix.m[0][2], rotateMatrix.m[0][3]);
+		ImGui::Text("[ %f, %f, %f, %f ]", rotateMatrix.m[1][0], rotateMatrix.m[1][1], rotateMatrix.m[1][2], rotateMatrix.m[1][3]);
+		ImGui::Text("[ %f, %f, %f, %f ]", rotateMatrix.m[2][0], rotateMatrix.m[2][1], rotateMatrix.m[2][2], rotateMatrix.m[2][3]);
+		ImGui::Text("[ %f, %f, %f, %f ]", rotateMatrix.m[3][0], rotateMatrix.m[3][1], rotateMatrix.m[3][2], rotateMatrix.m[3][3]);
 
-		ImGui::Text("Inverse :");
-		ImGui::Text("x: %f, y: %f, z: %f, w: %f", inv.x, inv.y, inv.z, inv.w);
+		ImGui::Text("Vector3 rotatedByQuaternion:");
+		ImGui::Text("x: %f, y: %f, z: %f", rotatedByQuaternion.x, rotatedByQuaternion.y, rotatedByQuaternion.z);
 
-		ImGui::Text("Normalize :");
-		ImGui::Text("x: %f, y: %f, z: %f, w: %f", norml.x, norml.y, norml.z, norml.w);
+		ImGui::Text("Vector3 rotatedByMatrix:");
+		ImGui::Text("x: %f, y: %f, z: %f", rotatedByMatrix.x, rotatedByMatrix.y, rotatedByMatrix.z);
 
-		ImGui::Text("q1 * q2:");
-		ImGui::Text("x: %f, y: %f, z: %f, w: %f", mul1.x, mul1.y, mul1.z, mul1.w);
-
-		ImGui::Text("q2 * q1:");
-		ImGui::Text("x: %f, y: %f, z: %f, w: %f", mul2.x, mul2.y, mul2.z, mul2.w);
-
-		ImGui::Text("Norm : %f", norm);
 
 		ImGui::End();
 

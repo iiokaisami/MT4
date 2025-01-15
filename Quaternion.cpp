@@ -37,3 +37,35 @@ Quaternion Inverse(const Quaternion& quaternion)
 	Quaternion conjugate = Conjugate(quaternion);
 	return Quaternion{ conjugate.x / (norm * norm), conjugate.y / (norm * norm), conjugate.z / (norm * norm), conjugate.w / (norm * norm) };
 }
+
+Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle)
+{
+	float halfAngle = angle * 0.5f;
+	float sinHalfAngle = std::sin(halfAngle);
+	return Quaternion{ axis.x * sinHalfAngle, axis.y * sinHalfAngle, axis.z * sinHalfAngle, std::cos(halfAngle) };
+}
+
+Vector3 RotateVector(const Vector3& vector, const Quaternion& quaternion)
+{
+	Quaternion q = quaternion;
+	Quaternion v = Quaternion{ vector.x, vector.y, vector.z, 0.0f };
+	Quaternion qInv = Inverse(q);
+	Quaternion result = Multiply(Multiply(q, v), qInv);
+	return Vector3{ result.x, result.y, result.z };
+}
+
+Matrix4x4 MakeRotationMatrix(const Quaternion& quaternion)
+{
+	Quaternion q = Normalize(quaternion);
+	float x = q.x;
+	float y = q.y;
+	float z = q.z;
+	float w = q.w;
+	Matrix4x4 result = {
+	result.m[0][0] = 1.0f - 2.0f * y * y - 2.0f * z * z, result.m[0][1] = 2.0f * x * y + 2.0f * z * w, result.m[0][2] = 2.0f * x * z - 2.0f * y * w, result.m[0][3] = 0.0f,
+	result.m[1][0] = 2.0f * x * y - 2.0f * z * w, result.m[1][1] = 1.0f - 2.0f * x * x - 2.0f * z * z, result.m[1][2] = 2.0f * y * z + 2.0f * x * w, result.m[1][3] = 0.0f,
+	result.m[2][0] = 2.0f * x * z + 2.0f * y * w, result.m[2][1] = 2.0f * y * z - 2.0f * x * w,result.m[2][2] = 1.0f - 2.0f * x * x - 2.0f * y * y, result.m[2][3] = 0.0f,
+	result.m[3][0] = 0.0f, result.m[3][1] = 0.0f, result.m[3][2] = 0.0f, result.m[3][3] = 1.0f,
+	};
+	return result;
+}
