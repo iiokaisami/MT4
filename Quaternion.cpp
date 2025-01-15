@@ -1,5 +1,22 @@
 ﻿#include "Quaternion.h"
 
+// 演算子オーバーロードの実装
+Quaternion Quaternion::operator+(const Quaternion& other) const {
+	return Quaternion{ x + other.x, y + other.y, z + other.z, w + other.w };
+}
+
+Quaternion Quaternion::operator-(const Quaternion& other) const {
+	return Quaternion{ x - other.x, y - other.y, z - other.z, w - other.w };
+}
+
+Quaternion Quaternion::operator*(float scalar) const {
+	return Quaternion{ x * scalar, y * scalar, z * scalar, w * scalar };
+}
+
+Quaternion Quaternion::operator*(const Quaternion& other) const {
+	return Multiply(*this, other);
+}
+
 Quaternion Multiply(const Quaternion& lhs, const Quaternion& rhs)
 {
 	Quaternion result;
@@ -68,4 +85,26 @@ Matrix4x4 MakeRotationMatrix(const Quaternion& quaternion)
 	result.m[3][0] = 0.0f, result.m[3][1] = 0.0f, result.m[3][2] = 0.0f, result.m[3][3] = 1.0f,
 	};
 	return result;
+}
+
+Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
+{
+	Quaternion q1Copy = q1;
+	float dot = q0.x * q1Copy.x + q0.y * q1Copy.y + q0.z * q1Copy.z + q0.w * q1Copy.w;
+	if (dot < 0.0f)
+	{
+		q1Copy = Quaternion{ -q1Copy.x, -q1Copy.y, -q1Copy.z, -q1Copy.w };
+		dot = -dot;
+	}
+	const float THRESHOLD = 0.9995f;
+	if (dot > THRESHOLD)
+	{
+		Quaternion result = q0 + (q1Copy - q0) * t;
+		return Normalize(result);
+	}
+	float theta = std::acos(dot);
+	float sinTheta = std::sin(theta);
+	float s0 = std::sin((1.0f - t) * theta) / sinTheta;
+	float s1 = std::sin(t * theta) / sinTheta;
+	return q0 * s0 + q1Copy * s1;
 }

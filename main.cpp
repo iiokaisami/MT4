@@ -12,11 +12,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	Quaternion rotation = MakeRotateAxisAngleQuaternion(Normalize(Vector3{ 1.0f, 0.4f, -0.2f }), 0.45f);
-	Vector3 pointV = { 2.1f, -0.9f, 1.3f };
-	Matrix4x4 rotateMatrix = MakeRotationMatrix(rotation);
-	Vector3 rotatedByQuaternion = RotateVector(pointV, rotation);
-	Vector3 rotatedByMatrix = Transform(pointV, rotateMatrix);
+	Quaternion rotation0 = MakeRotateAxisAngleQuaternion({ 0.71f, 0.71f, 0.0f }, 0.3f);
+	Quaternion rotation1 = MakeRotateAxisAngleQuaternion({ 0.71f, 0.0f, 0.71f }, 3.141592f);
+
+	Quaternion interpolate0 = Slerp(rotation0, rotation1, 0.0f);
+	Quaternion interpolate1 = Slerp(rotation0, rotation1, 0.3f);
+	Quaternion interpolate2 = Slerp(rotation0, rotation1, 0.5f);
+	Quaternion interpolate3 = Slerp(rotation0, rotation1, 0.7f);
+	Quaternion interpolate4 = Slerp(rotation0, rotation1, 1.0f);
 
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
@@ -37,21 +40,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		ImGui::Begin("Debug");
 
-		ImGui::Text("Quaternion rotation:");
-		ImGui::Text("x: %f, y: %f, z: %f, w: %f", rotation.x, rotation.y, rotation.z, rotation.w);
+		ImGui::Text("Quaternion interpolate0:");
+		ImGui::Text("x: %f, y: %f, z: %f, w: %f", interpolate0.x, interpolate0.y, interpolate0.z, interpolate0.w);
 
-		ImGui::Text("Matrix4x4 rotateMatrix:");
-		ImGui::Text("[ %f, %f, %f, %f ]", rotateMatrix.m[0][0], rotateMatrix.m[0][1], rotateMatrix.m[0][2], rotateMatrix.m[0][3]);
-		ImGui::Text("[ %f, %f, %f, %f ]", rotateMatrix.m[1][0], rotateMatrix.m[1][1], rotateMatrix.m[1][2], rotateMatrix.m[1][3]);
-		ImGui::Text("[ %f, %f, %f, %f ]", rotateMatrix.m[2][0], rotateMatrix.m[2][1], rotateMatrix.m[2][2], rotateMatrix.m[2][3]);
-		ImGui::Text("[ %f, %f, %f, %f ]", rotateMatrix.m[3][0], rotateMatrix.m[3][1], rotateMatrix.m[3][2], rotateMatrix.m[3][3]);
+		ImGui::Text("Quaternion interpolate1:");
+		ImGui::Text("x: %f, y: %f, z: %f, w: %f", interpolate1.x, interpolate1.y, interpolate1.z, interpolate1.w);
 
-		ImGui::Text("Vector3 rotatedByQuaternion:");
-		ImGui::Text("x: %f, y: %f, z: %f", rotatedByQuaternion.x, rotatedByQuaternion.y, rotatedByQuaternion.z);
+		ImGui::Text("Quaternion interpolate2:");
+		ImGui::Text("x: %f, y: %f, z: %f, w: %f", interpolate2.x, interpolate2.y, interpolate2.z, interpolate2.w);
 
-		ImGui::Text("Vector3 rotatedByMatrix:");
-		ImGui::Text("x: %f, y: %f, z: %f", rotatedByMatrix.x, rotatedByMatrix.y, rotatedByMatrix.z);
+		ImGui::Text("Quaternion interpolate3:");
+		ImGui::Text("x: %f, y: %f, z: %f, w: %f", interpolate3.x, interpolate3.y, interpolate3.z, interpolate3.w);
 
+		ImGui::Text("Quaternion interpolate4:");
+		ImGui::Text("x: %f, y: %f, z: %f, w: %f", interpolate4.x, interpolate4.y, interpolate4.z, interpolate4.w);
 
 		ImGui::End();
 

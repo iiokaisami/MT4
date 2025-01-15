@@ -8,6 +8,12 @@ struct Quaternion
 	float y;
 	float z;
 	float w;
+
+	// 演算子オーバーロードの宣言
+	Quaternion operator+(const Quaternion& other) const;
+	Quaternion operator-(const Quaternion& other) const;
+	Quaternion operator*(float scalar) const;
+	Quaternion operator*(const Quaternion& other) const;
 };
 
 // Quaternionの積
@@ -34,5 +40,8 @@ Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle);
 // ベクトルをQuaternionで回転させた結果のベクトルを返す
 Vector3 RotateVector(const Vector3& vector, const Quaternion& quaternion);
 
-// Quatenionから回転行列を求める
+// Quaternionから回転行列を求める
 Matrix4x4 MakeRotationMatrix(const Quaternion& quaternion);
+
+// 球面線形補間
+Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t);
