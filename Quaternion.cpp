@@ -96,8 +96,8 @@ Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
 		q1Copy = Quaternion{ -q1Copy.x, -q1Copy.y, -q1Copy.z, -q1Copy.w };
 		dot = -dot;
 	}
-	const float THRESHOLD = 0.9995f;
-	if (dot > THRESHOLD)
+	const float EPSOLOM = 0.9995f;
+	if (dot >= EPSOLOM)
 	{
 		Quaternion result = q0 + (q1Copy - q0) * t;
 		return Normalize(result);
